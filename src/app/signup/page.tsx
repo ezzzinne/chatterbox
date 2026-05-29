@@ -115,7 +115,7 @@ export default function Signup() {
 
             <p className="text-sm text-center text-muted-foreground">
               Already have an account?{" "}
-              <Link href={"/"} className="underline underline-offset-4">
+              <Link href="/login" className="underline underline-offset-4">
                 Log in
               </Link>
             </p>

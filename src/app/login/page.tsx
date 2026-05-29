@@ -10,6 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Route } from "next";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email."),
@@ -20,6 +23,7 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const [authError, setAuthError] = useState<string | null>(null);
+  const router = useRouter()
 
   const {
     register,
@@ -42,7 +46,7 @@ export default function Login() {
       setAuthError(error.message);
       return;
     }
-    // router.push("/dashboard");
+    router.push("/dashboard" as Route);
   };
 
   return (
@@ -87,9 +91,9 @@ export default function Login() {
 
             <p className="text-sm text-center text-muted-foreground">
               Don’t have an account?{" "}
-              {/* <Link href={"/register"} className="underline underline-offset-4">
+              <Link href="/signup" className="underline underline-offset-4">
                 Sign up
-              </Link> */}
+              </Link>
             </p>
           </form>
         </CardContent>
