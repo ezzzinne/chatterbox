@@ -23,7 +23,7 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const [authError, setAuthError] = useState<string | null>(null);
-  const router = useRouter()
+  const router = useRouter();
 
   const {
     register,
@@ -49,14 +49,71 @@ export default function Login() {
     router.push("/dashboard" as Route);
   };
 
+  const signInWithGoogle = async () => {
+    const supabase = createClient();
+
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  };
+
+  const signInWithGitHub = async () => {
+    const supabase = createClient();
+
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-[75vh] px-4">
+    <div className="flex items-center justify-center min-h-screen px-4">
       <Card className="w-full max-w-md shadow-lg rounded-2xl">
-        <CardHeader>
+        <CardHeader className="space-y-2">
           <CardTitle className="text-2xl text-center">Welcome Back</CardTitle>
+          <p className="text-center text-muted-foreground text-sm">
+            Sign in to your account
+          </p>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="space-y-6">
+          <div className="space-y-5">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={signInWithGoogle}
+              className="w-full"
+            >
+              Continue with Google
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={signInWithGitHub}
+              className="w-full"
+            >
+              Continue with GitHub
+            </Button>
+          </div>
+
+          <div className="relative py-5">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+
+            <div className="relative flex justify-center">
+              <span className="bg-background px-3 text-xs text-muted-foreground uppercase">
+                Or continue with email
+              </span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <Label>Email</Label>
@@ -91,7 +148,10 @@ export default function Login() {
 
             <p className="text-sm text-center text-muted-foreground">
               Don’t have an account?{" "}
-              <Link href="/signup" className="underline underline-offset-4">
+              <Link
+                href={"/signup" as Route}
+                className="underline underline-offset-4"
+              >
                 Sign up
               </Link>
             </p>
