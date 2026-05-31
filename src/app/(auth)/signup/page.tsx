@@ -63,14 +63,68 @@ export default function Signup() {
     router.push("/dashboard" as Route);
   };
 
+  const signInWithGoogle = async () => {
+    const supabase = createClient();
+
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  };
+
+  const signInWithGitHub = async () => {
+    const supabase = createClient();
+
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-[80vh] px-4">
+    <div className="flex items-center justify-center min-h-screen px-4">
       <Card className="w-full max-w-md shadow-lg rounded-2xl">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Create Account</CardTitle>
         </CardHeader>
 
         <CardContent>
+          <div className="space-y-5">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={signInWithGoogle}
+            >
+              Sign up with Google
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={signInWithGitHub}
+            >
+              Sign up with GitHub
+            </Button>
+          </div>
+
+          <div className="relative py-5">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+
+            <div className="relative flex justify-center">
+              <span className="bg-background px-3 text-xs text-muted-foreground uppercase">
+                Or sign up manually
+              </span>
+            </div>
+          </div>
+          
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <Label>Name</Label>
