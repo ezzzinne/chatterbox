@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { createClient } from "@/lib/client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,27 +7,44 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const emailSchema = z.object({
+  email: z.string().email("Please enter a valid email address."),
+});
+
+type EmailValues = z.infer<typeof emailSchema>;
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [, setEmailSent] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<EmailValues>({
+    resolver: zodResolver(emailSchema),
+  });
 
+  async function onSubmit(value: EmailValues) {
     const supabase = createClient();
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
-    });
+    const redirectTo = `${window.location.origin}/auth/callback?next=/reset-password`;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      value.email.trim(),
+      {
+        redirectTo,
+      },
+    );
 
     if (error) {
       toast.error(error.message);
       return;
     }
-
-    setEmailSent(true);
-    toast.success("Password reset link sent");
+    
+    toast.success("Password reset link sent. Check your email.");
   }
 
   return (
@@ -43,19 +59,21 @@ export default function ForgotPasswordPage() {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <Label>Email</Label>
 
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <Input id="email" type="email" {...register("email")} />
+
+              {errors.email && (
+                <p className="text-sm text-destructive">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
-            <Button type="submit" className="w-full">
-              Send Reset Link
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Sending..." : "Send Reset Link"}
             </Button>
           </form>
         </CardContent>
