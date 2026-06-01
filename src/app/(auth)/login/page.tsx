@@ -29,7 +29,7 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
   });
 
@@ -114,7 +114,11 @@ export default function Login() {
             </div>
           </div>
 
-          <form method="post" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form
+            method="post"
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
             <div className="space-y-2">
               <Label>Email</Label>
               <Input type="email" {...register("email")} />
@@ -136,6 +140,15 @@ export default function Login() {
               {authError && (
                 <p className="text-sm text-destructive">{authError}</p>
               )}
+            </div>
+
+            <div className="flex justify-end mt-0">
+              <Link
+                href={"/forgot-password" as Route}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                Forgot Password?
+              </Link>
             </div>
 
             <Button
