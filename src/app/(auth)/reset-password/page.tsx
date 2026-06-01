@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { z } from "zod";
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Route } from "next";
 
 const passwordSchema = z
   .object({
@@ -35,6 +36,8 @@ type FormValues = z.infer<typeof passwordSchema>;
 
 export default function ResetPasswordPage() {
   const [authError] = useState<string | null>(null);
+  const [, setSessionReady] = useState(false);
+  const [sessionError, setSessionError] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -45,6 +48,27 @@ export default function ResetPasswordPage() {
   } = useForm<FormValues>({
     resolver: zodResolver(passwordSchema),
   });
+
+  useEffect(() => {
+    async function checkSession() {
+      const supabase = createClient();
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setSessionError(
+          "Your password reset link is invalid or has expired. Please request a new one.",
+        );
+        return;
+      }
+
+      setSessionReady(true);
+    }
+
+    checkSession();
+  }, []);
 
   async function onSubmit(value: FormValues) {
     const supabase = createClient();
@@ -62,7 +86,31 @@ export default function ResetPasswordPage() {
       description: "Redirecting to login...",
     });
 
-    router.push("/login");
+    await supabase.auth.signOut();
+
+    router.replace("/login");
+  }
+
+  if (sessionError) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center px-4">
+        <Card className="w-full max-w-md shadow-lg rounded-2xl">
+          <CardHeader>
+            <CardTitle className="text-center text-2xl">
+              Reset Link Invalid
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="space-y-4 text-center">
+            <p className="text-sm text-muted-foreground">{sessionError}</p>
+
+            <Button onClick={() => router.replace("/forgot-password" as Route)}>
+              Request New Link
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

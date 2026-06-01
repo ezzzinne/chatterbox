@@ -11,9 +11,7 @@ import { toast } from "sonner";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [success] = useState("");
-  const [errorMessage] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
+  const [, setEmailSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,7 +19,7 @@ export default function ForgotPasswordPage() {
     const supabase = createClient();
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
     });
 
     if (error) {
@@ -30,24 +28,7 @@ export default function ForgotPasswordPage() {
     }
 
     setEmailSent(true);
-
-    if (emailSent) {
-      return (
-        <div className="flex min-h-[80vh] items-center justify-center px-4">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle>Check Your Email</CardTitle>
-            </CardHeader>
-
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                We’ve sent a password reset link to your email address.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
+    toast.success("Password reset link sent");
   }
 
   return (
@@ -72,12 +53,6 @@ export default function ForgotPasswordPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-
-            {errorMessage && (
-              <p className="text-sm text-destructive">{errorMessage}</p>
-            )}
-
-            {success && <p className="text-sm text-green-600">{success}</p>}
 
             <Button type="submit" className="w-full">
               Send Reset Link
