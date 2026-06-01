@@ -14,8 +14,16 @@ import { useRouter } from "next/navigation";
 import type { Route } from "next";
 
 const signupSchema = z.object({
-  name: z.string(),
+  firstName: z.string().min(1, "First name is required."),
+  lastName: z.string().min(1, "Last name is required."),
   email: z.string().email("Please enter a valid email."),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters.")
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      "Username can only contain letters, numbers, and underscores.",
+    ),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters.")
@@ -38,7 +46,7 @@ export default function Signup() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
   });
 
@@ -52,11 +60,21 @@ export default function Signup() {
       password: value.password,
       options: {
         data: {
-          name: value.name,
+          first_name: value.firstName.trim(),
+          last_name: value.lastName.trim(),
+          username: value.username.trim(),
+          full_name: `${value.firstName.trim()} ${value.lastName.trim()}`,
         },
       },
     });
     if (error) {
+      if (
+        error.message.toLowerCase().includes("profiles_username_unique_idx")
+      ) {
+        setAuthError("This username is already taken.");
+        return;
+      }
+
       setAuthError(error.message);
       return;
     }
@@ -124,14 +142,40 @@ export default function Signup() {
               </span>
             </div>
           </div>
-          
-          <form method="post" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+
+          <form
+            method="post"
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-5"
+          >
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input id="firstName" {...register("firstName")} />
+                {errors.firstName && (
+                  <p className="text-sm text-destructive">
+                    {errors.firstName.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input id="lastName" {...register("lastName")} />
+                {errors.lastName && (
+                  <p className="text-sm text-destructive">
+                    {errors.lastName.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
             <div className="space-y-2">
-              <Label>Name</Label>
-              <Input {...register("name")} />
-              {errors.name && (
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" {...register("username")} />
+              {errors.username && (
                 <p className="text-sm text-destructive">
-                  {errors.name.message}
+                  {errors.username.message}
                 </p>
               )}
             </div>
