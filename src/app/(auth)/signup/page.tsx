@@ -60,7 +60,7 @@ export default function Signup() {
       setAuthError(error.message);
       return;
     }
-    router.push("/dashboard" as Route);
+    router.replace("/dashboard" as Route);
   };
 
   const signInWithGoogle = async () => {
@@ -69,7 +69,7 @@ export default function Signup() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
       },
     });
   };
@@ -80,7 +80,7 @@ export default function Signup() {
     await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
       },
     });
   };
@@ -125,7 +125,7 @@ export default function Signup() {
             </div>
           </div>
           
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form method="post" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <Label>Name</Label>
               <Input {...register("name")} />
