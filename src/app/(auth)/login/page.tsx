@@ -46,7 +46,7 @@ export default function Login() {
       setAuthError(error.message);
       return;
     }
-    router.push("/dashboard" as Route);
+    router.replace("/dashboard" as Route);
   };
 
   const signInWithGoogle = async () => {
@@ -55,7 +55,7 @@ export default function Login() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
       },
     });
   };
@@ -66,7 +66,7 @@ export default function Login() {
     await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
       },
     });
   };
@@ -102,7 +102,7 @@ export default function Login() {
             </Button>
           </div>
 
-          <div className="relative py-5">
+          <div className="relative py-3">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
             </div>
@@ -114,7 +114,7 @@ export default function Login() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form method="post" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
               <Label>Email</Label>
               <Input type="email" {...register("email")} />
