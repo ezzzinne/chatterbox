@@ -12,6 +12,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Route } from "next";
+import { PasswordInput } from "@/components/password-input";
 
 const signupSchema = z.object({
   firstName: z.string().min(1, "First name is required."),
@@ -192,7 +193,7 @@ export default function Signup() {
 
             <div className="space-y-2">
               <Label>Password</Label>
-              <Input type="password" {...register("password")} />
+              <PasswordInput type="password" {...register("password")} />
               {errors.password && (
                 <p className="text-sm text-destructive">
                   {errors.password.message}

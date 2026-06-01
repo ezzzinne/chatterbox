@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Route } from "next";
+import { PasswordInput } from "@/components/password-input";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email."),
@@ -81,7 +82,7 @@ export default function Login() {
           </p>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+        <CardContent>
           <div className="space-y-5">
             <Button
               type="button"
@@ -131,7 +132,7 @@ export default function Login() {
 
             <div className="space-y-2">
               <Label>Password</Label>
-              <Input type="password" {...register("password")} />
+              <PasswordInput type="password" {...register("password")} />
               {errors.password && (
                 <p className="text-sm text-destructive">
                   {errors.password.message}

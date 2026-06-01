@@ -11,10 +11,10 @@ import { createClient } from "@/lib/client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Route } from "next";
+import { PasswordInput } from "@/components/password-input";
 
 const passwordSchema = z
   .object({
@@ -131,7 +131,7 @@ export default function ResetPasswordPage() {
             <div className="space-y-2">
               <Label>New Password</Label>
 
-              <Input type="password" {...register("password")} />
+              <PasswordInput type="password" {...register("password")} />
 
               {errors.password && (
                 <p className="text-sm text-destructive">
@@ -143,7 +143,7 @@ export default function ResetPasswordPage() {
             <div className="space-y-2">
               <Label>Confirm Password</Label>
 
-              <Input type="password" {...register("confirmPassword")} />
+              <PasswordInput type="password" {...register("confirmPassword")} />
 
               {errors.confirmPassword && (
                 <p className="text-sm text-destructive">
