@@ -86,3 +86,32 @@ export async function saveDraftAction(input: SaveDraftInput) {
     postId,
   };
 }
+
+export async function publishPostAction(postId: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("You must be logged in.");
+  }
+
+  const { error } = await supabase
+    .from("posts")
+    .update({
+      status: "published",
+      published_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", postId)
+    .eq("author_id", user.id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { success: true };
+}
