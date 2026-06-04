@@ -1,17 +1,19 @@
-import { Bell } from "lucide-react";
+import { Bell, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { MobileSidebar } from "./mobile-sidebar";
 import { createClient } from "@/lib/server";
+import Link from "next/link";
+import { Route } from "next";
 
 export async function DashboardNavbar() {
-      const supabase = await createClient();
+  const supabase = await createClient();
 
-    const {
-  data: { user },
-} = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <>
@@ -21,14 +23,15 @@ export async function DashboardNavbar() {
           <div className="flex items-center gap-3">
             <MobileSidebar />
 
-            <h1 className="font-bold">
-              Chatterbox
-            </h1>
+            <h1 className="font-bold">Chatterbox</h1>
           </div>
 
-          <Button size="sm">
-            Create
-          </Button>
+          <Link href={"/dashboard/posts/new" as Route}>
+            <Button size="sm">
+              <Plus />
+              New
+            </Button>
+          </Link>
         </div>
       </header>
 
@@ -43,22 +46,23 @@ export async function DashboardNavbar() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button>
-              Create Post
-            </Button>
+            <Link href={"/dashboard/posts/new" as Route}>
+              <Button>
+                <Plus />
+                New Article
+              </Button>
+            </Link>
 
-            <Button
-              variant="outline"
-              size="icon"
-            >
+            <Button variant="outline" size="icon">
               <Bell />
             </Button>
 
             <Avatar>
-                <AvatarImage src={user?.user_metadata.avatar_url} />
+              <AvatarImage src={user?.user_metadata.avatar_url} />
 
               <AvatarFallback>
-                {user?.user_metadata.first_name?.[0]?.toUpperCase() + user?.user_metadata.last_name?.[0]?.toUpperCase()}
+                {user?.user_metadata.first_name?.[0]?.toUpperCase() +
+                  user?.user_metadata.last_name?.[0]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </div>
