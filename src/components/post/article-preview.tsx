@@ -83,7 +83,7 @@ export function ArticlePreview({ post }: ArticlePreviewProps) {
 
         <Separator />
 
-        <CardContent className="pt-8">
+        <CardContent>
           <article className="leading-8 text-base md:text-lg">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {post.content_markdown}

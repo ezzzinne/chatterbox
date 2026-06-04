@@ -13,7 +13,7 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
       <MDEditor
         value={value}
         onChange={(value) => onChange(value || "")}
-        height={300}
+        height={600}
       />
     </div>
   );

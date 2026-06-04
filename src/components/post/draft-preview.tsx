@@ -120,7 +120,7 @@ export function DraftPreview({ post }: DraftPreviewProps) {
 
         <Separator />
 
-        <CardContent className="pt-8">
+        <CardContent>
           <article className="leading-8 text-base md:text-lg">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {post.content_markdown}

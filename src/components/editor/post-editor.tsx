@@ -116,7 +116,7 @@ export function PostEditor({ tags, post }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between pb-4">
+      <div className="flex items-center justify-between pb-2">
         <Button variant="ghost" onClick={() => window.history.back()}>
           <ArrowLeft className="h-4 w-4" />
           Back
