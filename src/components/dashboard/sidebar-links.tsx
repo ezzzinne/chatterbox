@@ -14,22 +14,22 @@ export const sidebarLinks = [
   },
   {
     label: "Articles",
-    href: "/articles",
+    href: "/dashboard/articles",
     icon: FileText,
   },
   {
     label: "Drafts",
-    href: "/drafts",
+    href: "/dashboard/drafts",
     icon: FilePenLine,
   },
   {
     label: "Stats",
-    href: "/stats",
+    href: "/dashboard/stats",
     icon: BarChart3,
   },
   {
     label: "Bookmarks",
-    href: "/bookmarks",
+    href: "/dashboard/bookmarks",
     icon: Bookmark,
   },
 ];
