@@ -1,10 +1,15 @@
 import { createClient } from "@/lib/server";
+import { Route } from "next";
+import Link from "next/link";
 
 export default async function DashboardLayoutPreview() {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.from("posts").select("*");
-
+  const { data: posts, error } = await supabase
+    .from("posts")
+    .select("id, title, excerpt, published_at, views")
+    .eq("status", "published")
+    .order("published_at", { ascending: false });
   if (error) {
     return <div>Error loading posts</div>;
   }
@@ -45,14 +50,31 @@ export default async function DashboardLayoutPreview() {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {data.map((post) => (
+                {/* <div className="space-y-4">
+                  {posts.map((post) => (
                     <ArticleCard
                       key={post.id}
                       title={post.title}
-                      status={post.status}
+                      status={post.published_at}
                       views={post.views}
                     />
+                  ))}
+                </div> */}
+                <div className="grid gap-4">
+                  {posts?.map((post) => (
+                    <Link
+                      key={post.id}
+                      href={`/dashboard/articles/${post.id}` as Route}
+                      className="rounded-xl border p-4 transition hover:bg-muted/50"
+                    >
+                      <h2 className="font-semibold">{post.title}</h2>
+
+                      {post.excerpt && (
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {post.excerpt}
+                        </p>
+                      )}
+                    </Link>
                   ))}
                 </div>
               </div>
