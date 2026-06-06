@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/server";
 import { redirect, notFound } from "next/navigation";
 import { ArticlePreview } from "@/components/post/article-preview";
+import { recordPostViewAction } from "@/actions/views";
 
 type Props = {
   params: Promise<{
@@ -51,11 +52,73 @@ export default async function ArticlePage({ params }: Props) {
     notFound();
   }
 
+  if (post.status !== "published") {
+    notFound();
+  }
+
+  await recordPostViewAction(post.id);
+
+  const { data: author } = await supabase
+    .from("profiles")
+    .select("id, name, first_name, last_name, username, avatar_url, bio")
+    .eq("id", post.author_id)
+    .maybeSingle();
+
+  const { data: existingLike } = await supabase
+    .from("post_likes")
+    .select("post_id")
+    .eq("post_id", post.id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const { data: existingBookmark } = await supabase
+    .from("bookmarks")
+    .select("post_id")
+    .eq("post_id", post.id)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const { data: commentRows, error: commentsError } = await supabase
+    .from("comments")
+    .select("id, post_id, author_id, parent_id, body, depth, created_at")
+    .eq("post_id", post.id)
+    .order("created_at", { ascending: true });
+
+  if (commentsError) {
+    console.error("Comments fetch error:", commentsError);
+  }
+
+  const authorIds = [
+    ...new Set((commentRows ?? []).map((comment) => comment.author_id)),
+  ];
+
+  const { data: commentAuthors, error: commentAuthorsError } = authorIds.length
+    ? await supabase
+        .from("profiles")
+        .select("id, name, first_name, last_name, username, avatar_url")
+        .in("id", authorIds)
+    : { data: [], error: null };
+
+  if (commentAuthorsError) {
+    console.error("Comment authors fetch error:", commentAuthorsError);
+  }
+
+  const authorsById = new Map(
+    (commentAuthors ?? []).map((author) => [author.id, author]),
+  );
+
+  const comments =
+    commentRows?.map((comment) => ({
+      ...comment,
+      author: authorsById.get(comment.author_id) ?? null,
+    })) ?? [];
+
   const tags =
     post.post_tags?.flatMap((item) => item.tags ?? []).filter(Boolean) ?? [];
 
   const normalizedPost = {
     id: post.id,
+    author_id: post.author_id,
     title: post.title,
     excerpt: post.excerpt,
     content_markdown: post.content_markdown ?? "",
@@ -65,7 +128,28 @@ export default async function ArticlePage({ params }: Props) {
     updated_at: post.updated_at,
     tags,
     isAuthor: post.author_id === user.id,
+    author: author
+      ? {
+          id: author.id,
+          name: author.name ?? null,
+          first_name: author.first_name ?? null,
+          last_name: author.last_name ?? null,
+          username: author.username ?? null,
+          avatar_url: author.avatar_url ?? null,
+          bio: author.bio ?? null,
+        }
+      : null,
   };
 
-  return <ArticlePreview post={normalizedPost} />;
+  return (
+    <ArticlePreview
+      post={{
+        ...normalizedPost,
+        isLiked: !!existingLike,
+        isBookmarked: !!existingBookmark,
+      }}
+      currentUserId={user.id}
+      initialComments={comments ?? []}
+    />
+  );
 }
