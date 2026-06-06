@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { Route } from "next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -12,10 +10,18 @@ import { Separator } from "@/components/ui/separator";
 
 import { ArrowLeft, Clock } from "lucide-react";
 import { calculateReadingTime } from "@/lib/reading-time";
+import { ArticleActions } from "./article-actions";
+import { Comment, CommentsSection } from "./comment-section";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useRouter } from "next/navigation";
+import { FollowAuthorButton } from "../profile/follow-author-button";
+import Link from "next/link";
+import { Route } from "next";
 
 type ArticlePreviewProps = {
   post: {
     id: string;
+    author_id: string;
     title: string;
     excerpt: string | null;
     content_markdown: string;
@@ -24,73 +30,154 @@ type ArticlePreviewProps = {
     created_at: string;
     updated_at: string;
     isAuthor?: boolean;
+    isLiked?: boolean;
+    isBookmarked?: boolean;
+    isFollowingAuthor?: boolean;
     tags: {
       id: string;
       name: string;
     }[];
+    author: {
+      id: string | null;
+      name: string | null;
+      first_name: string | null;
+      last_name: string | null;
+      username: string | null;
+      avatar_url: string | undefined;
+      bio: string | null;
+    } | null;
   };
+  currentUserId: string;
+  initialComments: Comment[];
 };
 
-export function ArticlePreview({ post }: ArticlePreviewProps) {
+export function ArticlePreview({
+  post,
+  currentUserId,
+  initialComments,
+}: ArticlePreviewProps) {
   const readingTime = calculateReadingTime(post.content_markdown);
+
+  const router = useRouter();
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-6">
       <div className="flex items-center">
-        <Button variant="ghost" asChild>
-          <Link href={"/dashboard/articles" as Route}>
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Link>
+        <Button variant="ghost" onClick={() => router.back()}>
+          <ArrowLeft className="h-4 w-4" />
+          Back
         </Button>
       </div>
 
-      <Card className="mt-4">
-        <CardHeader className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
-            {post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
-                  <Badge key={tag.id} variant="secondary">
-                    {tag.name}
-                  </Badge>
-                ))}
+      <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
+        <div className="space-y-6">
+          <Card className="mt-4">
+            <CardHeader className="space-y-5">
+              <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-muted-foreground">
+                {post.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag) => (
+                      <Badge key={tag.id} variant="secondary">
+                        {tag.name}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  {readingTime} min read
+                </div>
               </div>
-            )}
-            <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              {readingTime} min read
+
+              <div className="flex flex-col gap-6">
+                {post.published_at && (
+                  <span className="text-muted-foreground">
+                    Published{" "}
+                    {new Date(post.published_at).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                )}
+
+                <h1 className="text-3xl font-bold tracking-tight">
+                  {post.title || "Untitled"}
+                </h1>
+              </div>
+            </CardHeader>
+
+            <Separator />
+
+            <CardContent>
+              <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_280px]">
+                <div>
+                  <article className="max-w-none text-base leading-8 [&_h1]:mt-10 [&_h1]:mb-4 [&_h1]:text-4xl [&_h1]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-2xl [&_p]:mb-6 [&_ul]:mb-6 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {post.content_markdown}
+                    </ReactMarkdown>
+                  </article>
+
+                  <ArticleActions
+                    postId={post.id}
+                    initialLiked={post.isLiked ?? false}
+                    initialBookmarked={post.isBookmarked ?? false}
+                  />
+
+                  <Separator />
+
+                  <CommentsSection
+                    postId={post.id}
+                    initialComments={initialComments}
+                    currentUserId={currentUserId}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <aside className="hidden lg:block">
+          <div className="sticky top-6 rounded-xl border bg-card p-6 space-y-5">
+            <p className="uppercase text-muted-foreground">Author</p>
+            <div className="flex items-center gap-3">
+              <Avatar>
+                <AvatarImage src={post.author?.avatar_url} />
+                <AvatarFallback>
+                  {(post.author?.first_name?.[0] ?? "") +
+                    (post.author?.last_name?.[0] ?? "")}
+                </AvatarFallback>
+              </Avatar>
+
+              <div className="min-w-0">
+                <h3 className="text-sm font-semibold leading-tight truncate">
+                  {post.author?.name}
+                </h3>
+                <Link
+                  href={`/dashboard/users/${post?.author?.username}` as Route}
+                >
+                  <p className="text-xs text-muted-foreground truncate">
+                    @{post.author?.username}
+                  </p>
+                </Link>
+              </div>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-6">
-            {post.published_at && (
-              <span>
-                Published{" "}
-                {new Date(post.published_at).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
+            {post.author?.bio && (
+              <p className="text-sm leading-6 text-muted-foreground">
+                {post.author.bio}
+              </p>
             )}
-            
-            <h1 className="text-3xl font-bold tracking-tight">
-              {post.title || "Untitled"}
-            </h1>
+
+            {!post.isAuthor && (
+              <FollowAuthorButton
+                authorId={post.author_id}
+                initiallyFollowing={post.isFollowingAuthor ?? false}
+              />
+            )}
           </div>
-        </CardHeader>
-
-        <Separator />
-
-        <CardContent>
-          <article className="leading-8 text-base md:text-lg">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {post.content_markdown}
-            </ReactMarkdown>
-          </article>
-        </CardContent>
-      </Card>
+        </aside>
+      </div>
     </div>
   );
 }
