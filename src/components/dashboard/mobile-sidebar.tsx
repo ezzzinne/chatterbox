@@ -59,9 +59,7 @@ export async function MobileSidebar() {
         </div>
         <div className="flex items-center justify-end gap-3 rounded-2xl border bg-background p-3">
           <div className="flex size-11 items-center justify-center rounded-full bg-muted text-sm font-semibold">
-            {user?.user_metadata.first_name?.[0]?.toUpperCase() +
-              user?.user_metadata.last_name?.[0]?.toUpperCase() ||
-              user?.user_metadata.avatar_url}
+            {`${user?.user_metadata?.first_name?.[0] ?? ""}${user?.user_metadata?.last_name?.[0] ?? ""}`.toUpperCase()}
           </div>
 
           <div className="min-w-0 flex-1">
