@@ -14,6 +14,7 @@ import { saveDraftAction } from "@/actions/posts";
 import { useRouter } from "next/navigation";
 import { Route } from "next";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 
 type ExistingPost = {
   id: string;
@@ -69,6 +70,11 @@ export function PostEditor({ tags, post }: Props) {
         tagIds: draftToSave.selectedTags.map((tag) => tag.id),
       });
 
+      if (result.skipped) {
+        setSaveState("saved");
+        return;
+      }
+
       postIdRef.current = result.postId;
 
       setSaveState("saved");
@@ -107,6 +113,12 @@ export function PostEditor({ tags, post }: Props) {
   };
 
   const handlePreview = async () => {
+    if (!draft.content.trim()) {
+      setSaveState("error");
+      toast.error("Add content to save and preview.");
+      return;
+    }
+
     if (saveTimerRef.current) {
       clearTimeout(saveTimerRef.current);
     }
