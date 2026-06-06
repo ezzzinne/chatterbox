@@ -11,7 +11,15 @@ type SaveDraftInput = {
   tagIds: string[];
 };
 
-export async function saveDraftAction(input: SaveDraftInput) {
+type SaveDraftResult = {
+  postId: string | null;
+  skipped: boolean;
+  message?: string;
+};
+
+export async function saveDraftAction(
+  input: SaveDraftInput,
+): Promise<SaveDraftResult> {
   const supabase = await createClient();
 
   const {
@@ -21,6 +29,16 @@ export async function saveDraftAction(input: SaveDraftInput) {
 
   if (userError || !user) {
     throw new Error("You must be logged in to create a post.");
+  }
+
+  const hasContent = input.content.trim().length > 0;
+
+  if (!hasContent) {
+    return {
+      postId: input.postId ?? null,
+      skipped: true,
+      message: "Draft was not saved because content is empty.",
+    };
   }
 
   let postId = input.postId;
@@ -83,7 +101,8 @@ export async function saveDraftAction(input: SaveDraftInput) {
   }
 
   return {
-    postId,
+    postId: postId ?? null,
+    skipped: false,
   };
 }
 
@@ -97,6 +116,24 @@ export async function publishPostAction(postId: string) {
 
   if (userError || !user) {
     throw new Error("You must be logged in.");
+  }
+
+  const { data: post, error: postError } = await supabase
+    .from("posts")
+    .select("id, title, content_markdown")
+    .eq("id", postId)
+    .eq("author_id", user.id)
+    .single();
+
+  if (postError || !post) {
+    throw new Error("Post not found.");
+  }
+
+  const hasTitle = post.title?.trim().length > 0;
+  const hasContent = post.content_markdown?.trim().length > 0;
+
+  if (!hasTitle || !hasContent) {
+    throw new Error("A post must have a title and content before publishing.");
   }
 
   const { error } = await supabase

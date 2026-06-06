@@ -15,6 +15,8 @@ import { ArrowLeft, Clock, Pencil, Upload } from "lucide-react";
 
 import { Route } from "next";
 import { calculateReadingTime } from "@/lib/reading-time";
+import { toast } from "sonner";
+import { useState } from "react";
 
 type DraftPreviewProps = {
   post: {
@@ -35,10 +37,30 @@ type DraftPreviewProps = {
 export function DraftPreview({ post }: DraftPreviewProps) {
   const router = useRouter();
 
-  const handlePublish = async () => {
-    await publishPostAction(post.id);
+  const [isPublishing, setIsPublishing] = useState(false);
 
-    router.push("/dashboard/articles" as Route);
+  const canPublish =
+    post.title.trim().length > 0 && post.content_markdown.trim().length > 0;
+
+  const handlePublish = async () => {
+    if (!canPublish) {
+      toast.error("Add a title and content before publishing.");
+      return;
+    }
+
+    try {
+      setIsPublishing(true);
+
+      await publishPostAction(post.id);
+
+      router.push("/dashboard/articles" as Route);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to publish post.",
+      );
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   const readingTime = calculateReadingTime(post.content_markdown);
@@ -55,7 +77,7 @@ export function DraftPreview({ post }: DraftPreviewProps) {
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
-        
+
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -68,9 +90,13 @@ export function DraftPreview({ post }: DraftPreviewProps) {
             Edit
           </Button>
 
-          <Button onClick={handlePublish} className="mb-3">
+          <Button
+            onClick={handlePublish}
+            disabled={isPublishing}
+            className="mb-3"
+          >
             <Upload className="h-4 w-4" />
-            Publish
+            {isPublishing ? "Publishing..." : "Publish"}
           </Button>
         </div>
       </div>
