@@ -137,9 +137,8 @@ export function ArticlePreview({
           </Card>
         </div>
 
-        <aside className="hidden lg:block">
-          <Card className="rounded-2xl sticky">
-            <CardTitle className="uppercase flex items-center text-muted-foreground">
+          <Card className="rounded-2xl mt-4">
+            <CardTitle className="uppercase flex items-center px-6 text-muted-foreground">
               Author
             </CardTitle>
             <CardContent>
@@ -180,7 +179,6 @@ export function ArticlePreview({
               )}
             </CardContent>
           </Card>
-        </aside>
       </div>
     </div>
   );
