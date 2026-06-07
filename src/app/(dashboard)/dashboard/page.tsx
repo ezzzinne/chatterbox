@@ -42,7 +42,7 @@ export default async function DashboardLayoutPreview() {
                 <FeedList />
               </div>
 
-              <aside className="hidden space-y-2 lg:block">
+              <aside className="space-y-2 lg:block">
                 <FollowedTags />
 
                 <SuggestedTags />

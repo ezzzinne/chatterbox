@@ -42,6 +42,7 @@ export function FollowAuthorButton({ authorId, initiallyFollowing }: Props) {
 
   return (
     <Button
+      className="mt-4 w-full"
       onClick={handleToggleFollow}
       disabled={isLoading}
       variant={isFollowing ? "secondary" : "default"}

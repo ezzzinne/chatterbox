@@ -69,7 +69,7 @@ export function ArticlePreview({
         </Button>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
+      <div className="grid gap-6 xl:grid-cols-[1.4fr_0.6fr]">
         <div className="space-y-6">
           <Card className="mt-4">
             <CardHeader className="space-y-5">
@@ -137,12 +137,13 @@ export function ArticlePreview({
           </Card>
         </div>
 
+        <div className="lg:block">
           <Card className="rounded-2xl mt-4">
             <CardTitle className="uppercase flex items-center px-6 text-muted-foreground">
               Author
             </CardTitle>
             <CardContent>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <Avatar>
                   <AvatarImage src={post.author?.avatar_url} />
                   <AvatarFallback>
@@ -151,7 +152,7 @@ export function ArticlePreview({
                   </AvatarFallback>
                 </Avatar>
 
-                <div className="min-w-0">
+                <div>
                   <h3 className="text-sm font-semibold leading-tight truncate">
                     {post.author?.name}
                   </h3>
@@ -179,6 +180,7 @@ export function ArticlePreview({
               )}
             </CardContent>
           </Card>
+        </div>
       </div>
     </div>
   );
