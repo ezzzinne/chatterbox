@@ -97,9 +97,6 @@ export default async function ArticlePage({ params }: Props) {
     .eq("user_id", user.id)
     .maybeSingle();
 
-  console.log("Existing like:", existingLike);
-  console.log("Existing bookmark:", existingBookmark);
-
   const { data: commentRows, error: commentsError } = await supabase
     .from("comments")
     .select("id, post_id, author_id, parent_id, body, depth, created_at")

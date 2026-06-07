@@ -46,7 +46,7 @@ export function PostCard({ post }: PostCardProps) {
   };
 
   return (
-    <Card className="h-full transition-all hover:-translate-y-1 hover:shadow-md hover:border-primary/20 my-4">
+    <Card className="grid gap-4 h-full transition-all hover:-translate-y-1 hover:shadow-md hover:border-primary/20">
       <CardHeader>
         <CardTitle>
           <h2 className="line-clamp-2 text-xl font-semibold leading-tight tracking-tight">

@@ -9,9 +9,11 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 
 import { FileText, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default async function ArticlesPage() {
   const supabase = await createClient();
@@ -58,31 +60,31 @@ export default async function ArticlesPage() {
       ) : (
         <div className="grid gap-4">
           {articles.map((post) => (
-            <Link
-              key={post.id}
-              href={`/dashboard/articles/${post.id}` as Route}
-            >
-              <Card className="transition-colors hover:bg-muted/40">
-                <CardHeader>
-                  <CardTitle className="line-clamp-1">{post.title}</CardTitle>
+            <Card key={post.id} className="transition-colors hover:bg-muted/40">
+              <CardHeader>
+                <CardTitle className="line-clamp-1">{post.title}</CardTitle>
 
-                  {post.excerpt && (
-                    <CardDescription className="line-clamp-2">
-                      {post.excerpt}
-                    </CardDescription>
-                  )}
-                </CardHeader>
+                {post.excerpt && (
+                  <CardDescription className="line-clamp-2">
+                    {post.excerpt}
+                  </CardDescription>
+                )}
+              </CardHeader>
 
-                <CardContent>
-                  {post.published_at && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      {new Date(post.published_at).toLocaleDateString()}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </Link>
+              <CardContent className="flex items-center justify-between text-xs text-muted-foreground">
+                {post.published_at && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    {new Date(post.published_at).toLocaleDateString()}
+                  </div>
+                )}
+                <Link href={`/dashboard/articles/${post.id}` as Route}>
+                  <Button variant="default" className="font-medium">
+                    Read
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
