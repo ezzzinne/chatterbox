@@ -110,29 +110,25 @@ export function ArticlePreview({
             <Separator />
 
             <CardContent>
-              <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_280px]">
-                <div>
-                  <article className="max-w-none text-base leading-8 [&_h1]:mt-10 [&_h1]:mb-4 [&_h1]:text-4xl [&_h1]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-2xl [&_p]:mb-6 [&_ul]:mb-6 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {post.content_markdown}
-                    </ReactMarkdown>
-                  </article>
+              <article className="max-w-none text-base leading-8 [&_h1]:mt-10 [&_h1]:mb-4 [&_h1]:text-4xl [&_h1]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-2xl [&_p]:mb-6 [&_ul]:mb-6 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {post.content_markdown}
+                </ReactMarkdown>
+              </article>
 
-                  <ArticleActions
-                    postId={post.id}
-                    initialLiked={post.isLiked ?? false}
-                    initialBookmarked={post.isBookmarked ?? false}
-                  />
+              <ArticleActions
+                postId={post.id}
+                initialLiked={post.isLiked ?? false}
+                initialBookmarked={post.isBookmarked ?? false}
+              />
 
-                  <Separator />
+              <Separator />
 
-                  <CommentsSection
-                    postId={post.id}
-                    initialComments={initialComments}
-                    currentUserId={currentUserId}
-                  />
-                </div>
-              </div>
+              <CommentsSection
+                postId={post.id}
+                initialComments={initialComments}
+                currentUserId={currentUserId}
+              />
             </CardContent>
           </Card>
         </div>

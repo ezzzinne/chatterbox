@@ -64,6 +64,25 @@ export default async function ArticlePage({ params }: Props) {
     .eq("id", post.author_id)
     .maybeSingle();
 
+  const isAuthor = post.author_id === user.id;
+
+  let isFollowingAuthor = false;
+
+  if (!isAuthor) {
+    const { data: followData, error: followError } = await supabase
+      .from("author_follows")
+      .select("author_id")
+      .eq("follower_id", user.id)
+      .eq("author_id", post.author_id)
+      .maybeSingle();
+
+    if (followError) {
+      console.error("Author follow check error:", followError);
+    }
+
+    isFollowingAuthor = !!followData;
+  }
+
   const { data: existingLike } = await supabase
     .from("post_likes")
     .select("post_id")
@@ -77,6 +96,9 @@ export default async function ArticlePage({ params }: Props) {
     .eq("post_id", post.id)
     .eq("user_id", user.id)
     .maybeSingle();
+
+  console.log("Existing like:", existingLike);
+  console.log("Existing bookmark:", existingBookmark);
 
   const { data: commentRows, error: commentsError } = await supabase
     .from("comments")
@@ -128,6 +150,9 @@ export default async function ArticlePage({ params }: Props) {
     updated_at: post.updated_at,
     tags,
     isAuthor: post.author_id === user.id,
+    isFollowingAuthor,
+    isLiked: !!existingLike,
+    isBookmarked: !!existingBookmark,
     author: author
       ? {
           id: author.id,

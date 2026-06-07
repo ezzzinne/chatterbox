@@ -12,9 +12,13 @@ type Props = {
   initialBookmarked: boolean;
 };
 
-export function ArticleActions({ postId }: Props) {
-  const [liked, setLiked] = useState(false);
-  const [bookmarked, setBookmarked] = useState(false);
+export function ArticleActions({
+  postId,
+  initialLiked,
+  initialBookmarked,
+}: Props) {
+  const [liked, setLiked] = useState(initialLiked);
+  const [bookmarked, setBookmarked] = useState(initialBookmarked);
   const [isLiking, setIsLiking] = useState(false);
   const [isBookmarking, setIsBookmarking] = useState(false);
 
