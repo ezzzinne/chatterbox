@@ -7,10 +7,9 @@ type Props = {
   params: Promise<{
     postId: string;
   }>;
-  currentUserId: string;
 };
 
-export default async function ArticlePage({ params, currentUserId }: Props) {
+export default async function ArticlePage({ params }: Props) {
   const { postId } = await params;
 
   const supabase = await createClient();
@@ -169,7 +168,7 @@ export default async function ArticlePage({ params, currentUserId }: Props) {
 
   return (
     <>
-      <PostViewTracker postId={post.id} userId={currentUserId} />
+      <PostViewTracker postId={post.id} userId={user.id} />
       <ArticlePreview
         post={{
           ...normalizedPost,

@@ -18,6 +18,7 @@ export default async function StatsPage() {
 
   if (error) {
     console.error("Stats fetch error:", error);
+    throw error;
   }
 
   return (

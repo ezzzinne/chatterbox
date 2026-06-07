@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
       if (recentEvent) {
         return new Response(JSON.stringify({ success: true, deduped: true }), {
           status: 200,
-          headers: { "Content-Type": "application/json" },
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
     }
@@ -75,14 +75,18 @@ Deno.serve(async (req) => {
     }
 
     // Fallback logic
-    await supabase.from("post_views").insert({
+    const { error: postViewsError } = await supabase.from("post_views").insert({
       post_id: postId,
       user_id: userId ?? null,
     });
 
+    if (postViewsError) {
+      throw postViewsError;
+    }
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
     return new Response(
@@ -91,7 +95,7 @@ Deno.serve(async (req) => {
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       },
     );
   }

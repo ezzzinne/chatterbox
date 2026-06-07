@@ -38,7 +38,6 @@ function getChangePercent(current: number, previous: number) {
 }
 
 export function StatsCharts({ data }: Props) {
-  console.log("StatsCharts raw data:", data);
 
   const normalizedData = data.map((row) => ({
     day: new Date(row.day).toLocaleDateString("en-US", {
@@ -51,8 +50,6 @@ export function StatsCharts({ data }: Props) {
     comments: Number(row.comments ?? 0),
     bookmarks: Number(row.bookmarks ?? 0),
   }));
-
-  console.log("StatsCharts normalized data:", normalizedData);
 
   const previous7 = normalizedData.slice(0, 7);
   const last7 = normalizedData.slice(7, 14);
