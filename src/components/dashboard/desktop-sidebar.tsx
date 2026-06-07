@@ -33,7 +33,7 @@ export default async function DesktopSidebar() {
               <Link
                 key={link.href}
                 href={link.href as Route}
-                className={`link ${pathname === "/" ? "active" : ""} flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium hover:bg-background`}
+                className={`link ${pathname === link.href ? "active" : ""} flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium hover:bg-background`}
               >
                 <Icon className="h-4 w-4" />
                 {link.label}
