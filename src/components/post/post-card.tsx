@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -49,32 +48,6 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <Card className="h-full transition-all hover:-translate-y-1 hover:shadow-md hover:border-primary/20 my-4">
       <CardHeader>
-        <div className="flex justify-between space-y-4">
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {post.tags.slice(0, 3).map((tag) => (
-                <Badge
-                  key={tag.id}
-                  variant="secondary"
-                  className="rounded-full px-3"
-                >
-                  {tag.name}
-                </Badge>
-              ))}
-            </div>
-          )}
-          <div className="min-w-0">
-            <p className="text-xs text-muted-foreground">
-              {post.published_at && (
-                <>
-                  Published on{" "}
-                  {new Date(post.published_at).toLocaleDateString()}
-                </>
-              )}
-            </p>
-          </div>
-        </div>
-
         <CardTitle>
           <h2 className="line-clamp-2 text-xl font-semibold leading-tight tracking-tight">
             {post.title || "Untitled"}
@@ -93,22 +66,22 @@ export function PostCard({ post }: PostCardProps) {
       <CardFooter className="flex items-center justify-between text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
-            <Heart className="h-3.5 w-3" />
+            <Heart className="h-4 w-4" />
             {post.like_count ?? 0}
           </div>
 
           <div className="flex items-center gap-1">
-            <Bookmark className="h-3.5 w-3" />
+            <Bookmark className="h-4 w-4" />
             {post.bookmark_count ?? 0}
           </div>
 
           <div className="flex items-center gap-1">
-            <MessageCircle className="h-3.5 w-3" />
+            <MessageCircle className="h-4 w-4" />
             {post.comment_count ?? 0}
           </div>
 
           <div className="flex items-center gap-1">
-            <Eye className="h-3.5 w-3" />
+            <Eye className="h-4 w-4" />
             {post.view_count ?? 0}
           </div>
         </div>

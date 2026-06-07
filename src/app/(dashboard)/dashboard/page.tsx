@@ -6,7 +6,7 @@ export default async function DashboardLayoutPreview() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="flex flex-1 flex-col">
-        <main className="flex-1 p-4 lg:p-8">
+        <main className="flex-1">
           <div className="mx-auto max-w-7xl space-y-8">
             <section className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tight">
@@ -42,7 +42,7 @@ export default async function DashboardLayoutPreview() {
                 <FeedList />
               </div>
 
-              <aside className="hidden space-y-4 lg:block">
+              <aside className="hidden space-y-2 lg:block">
                 <FollowedTags />
 
                 <SuggestedTags />

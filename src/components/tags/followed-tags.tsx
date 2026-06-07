@@ -44,7 +44,7 @@ export async function FollowedTags() {
     [];
 
   return (
-    <Card className="rounded-2xl mt-6">
+    <Card className="rounded-2xl">
       <CardHeader>
         <CardTitle className="flex items-center text-base">Your Tags</CardTitle>
       </CardHeader>

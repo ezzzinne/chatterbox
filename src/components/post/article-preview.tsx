@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 import { ArrowLeft, Clock } from "lucide-react";
@@ -138,44 +138,48 @@ export function ArticlePreview({
         </div>
 
         <aside className="hidden lg:block">
-          <div className="sticky top-6 rounded-xl border bg-card p-6 space-y-5">
-            <p className="uppercase text-muted-foreground">Author</p>
-            <div className="flex items-center gap-3">
-              <Avatar>
-                <AvatarImage src={post.author?.avatar_url} />
-                <AvatarFallback>
-                  {(post.author?.first_name?.[0] ?? "") +
-                    (post.author?.last_name?.[0] ?? "")}
-                </AvatarFallback>
-              </Avatar>
+          <Card className="rounded-2xl sticky">
+            <CardTitle className="uppercase flex items-center text-muted-foreground">
+              Author
+            </CardTitle>
+            <CardContent>
+              <div className="flex items-center gap-3">
+                <Avatar>
+                  <AvatarImage src={post.author?.avatar_url} />
+                  <AvatarFallback>
+                    {(post.author?.first_name?.[0] ?? "") +
+                      (post.author?.last_name?.[0] ?? "")}
+                  </AvatarFallback>
+                </Avatar>
 
-              <div className="min-w-0">
-                <h3 className="text-sm font-semibold leading-tight truncate">
-                  {post.author?.name}
-                </h3>
-                <Link
-                  href={`/dashboard/users/${post?.author?.username}` as Route}
-                >
-                  <p className="text-xs text-muted-foreground truncate">
-                    @{post.author?.username}
-                  </p>
-                </Link>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-semibold leading-tight truncate">
+                    {post.author?.name}
+                  </h3>
+                  <Link
+                    href={`/dashboard/users/${post?.author?.username}` as Route}
+                  >
+                    <p className="text-xs text-muted-foreground truncate">
+                      @{post.author?.username}
+                    </p>
+                  </Link>
+                </div>
               </div>
-            </div>
 
-            {post.author?.bio && (
-              <p className="text-sm leading-6 text-muted-foreground">
-                {post.author.bio}
-              </p>
-            )}
+              {post.author?.bio && (
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {post.author.bio}
+                </p>
+              )}
 
-            {!post.isAuthor && (
-              <FollowAuthorButton
-                authorId={post.author_id}
-                initiallyFollowing={post.isFollowingAuthor ?? false}
-              />
-            )}
-          </div>
+              {!post.isAuthor && (
+                <FollowAuthorButton
+                  authorId={post.author_id}
+                  initiallyFollowing={post.isFollowingAuthor ?? false}
+                />
+              )}
+            </CardContent>
+          </Card>
         </aside>
       </div>
     </div>

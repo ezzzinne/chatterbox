@@ -75,7 +75,7 @@ export function FeedList({ initialPosts = [] }: { initialPosts?: FeedPost[] }) {
   return (
     <div className="mx-auto max-w-4xl space-y-4">
       {posts.map((post, index) => (
-        <div key={post.id} className="space-y-4">
+        <div key={post.id} className="space-y-2">
           <PostCard post={post} />
 
           {index < posts.length - 1 && <div className="my-8 border-b" />}

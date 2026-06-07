@@ -195,7 +195,7 @@ export default async function BookmarksPage() {
   }));
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Bookmarks</h1>
@@ -207,7 +207,7 @@ export default async function BookmarksPage() {
       </div>
 
       {posts.length === 0 ? (
-        <Card className="mt-4">
+        <Card>
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
             <FileText className="mb-4 h-10 w-10 text-muted-foreground" />
 
