@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/server";
 import { redirect, notFound } from "next/navigation";
 import { ArticlePreview } from "@/components/post/article-preview";
-import { recordPostViewAction } from "@/actions/views";
+import { PostViewTracker } from "@/components/analytics/post-view-tracker";
 
 type Props = {
   params: Promise<{
@@ -56,7 +56,7 @@ export default async function ArticlePage({ params }: Props) {
     notFound();
   }
 
-  await recordPostViewAction(post.id);
+  // await recordPostViewAction(post.id);
 
   const { data: author } = await supabase
     .from("profiles")
@@ -167,14 +167,17 @@ export default async function ArticlePage({ params }: Props) {
   };
 
   return (
-    <ArticlePreview
-      post={{
-        ...normalizedPost,
-        isLiked: !!existingLike,
-        isBookmarked: !!existingBookmark,
-      }}
-      currentUserId={user.id}
-      initialComments={comments ?? []}
-    />
+    <>
+      <PostViewTracker postId={post.id} userId={user.id} />
+      <ArticlePreview
+        post={{
+          ...normalizedPost,
+          isLiked: !!existingLike,
+          isBookmarked: !!existingBookmark,
+        }}
+        currentUserId={user.id}
+        initialComments={comments ?? []}
+      />
+    </>
   );
 }
