@@ -21,6 +21,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Chatterbox",
   description: "A multi-functional publishing platform for writers and readers.",
+  icons: {
+    icon: "https://fav.farm/%F0%9F%93%9D"
+  }
 };
 
 export default function RootLayout({
