@@ -121,8 +121,8 @@ export default function Login() {
             className="space-y-4"
           >
             <div className="space-y-2">
-              <Label>Email</Label>
-              <Input type="email" {...register("email")} />
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" {...register("email")} />
               {errors.email && (
                 <p className="text-sm text-destructive">
                   {errors.email.message}
@@ -131,8 +131,12 @@ export default function Login() {
             </div>
 
             <div className="space-y-2">
-              <Label>Password</Label>
-              <PasswordInput type="password" {...register("password")} />
+              <Label htmlFor="password">Password</Label>
+              <PasswordInput
+                id="password"
+                type="password"
+                {...register("password")}
+              />
               {errors.password && (
                 <p className="text-sm text-destructive">
                   {errors.password.message}
