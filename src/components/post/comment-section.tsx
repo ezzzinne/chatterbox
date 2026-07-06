@@ -243,9 +243,9 @@ export function CommentsSection({ postId, initialComments = [] }: Props) {
                                 src={reply.author?.avatar_url ?? ""}
                               />
                               <AvatarFallback>
-                                {getAuthorInitials(comment.author) ||
-                                  `${comment?.author?.first_name?.[0] ?? ""}${
-                                    comment?.author?.last_name?.[0] ?? ""
+                                {getAuthorInitials(reply.author) ||
+                                  `${reply?.author?.first_name?.[0] ?? ""}${
+                                    reply?.author?.last_name?.[0] ?? ""
                                   }`.toUpperCase()}
                               </AvatarFallback>
                             </Avatar>

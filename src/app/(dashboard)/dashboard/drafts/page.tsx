@@ -56,7 +56,7 @@ export default async function DraftsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4">
           {drafts.map((post) => (
             <Link key={post.id} href={`/dashboard/drafts/${post.id}` as Route}>
               <Card className="h-full transition-colors hover:bg-muted/40">

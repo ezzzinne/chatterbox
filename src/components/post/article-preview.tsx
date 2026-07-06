@@ -144,7 +144,8 @@ export function ArticlePreview({
                   <AvatarImage src={post.author?.avatar_url} />
                   <AvatarFallback>
                     {(post.author?.first_name?.[0] ?? "") +
-                      (post.author?.last_name?.[0] ?? "")}
+                      (post.author?.last_name?.[0] ?? "") ||
+                      post.author?.name?.[0]}
                   </AvatarFallback>
                 </Avatar>
 
@@ -152,13 +153,19 @@ export function ArticlePreview({
                   <h3 className="text-sm font-semibold leading-tight truncate">
                     {post.author?.name}
                   </h3>
-                  <Link
-                    href={`/dashboard/users/${post?.author?.username}` as Route}
-                  >
-                    <p className="text-xs text-muted-foreground truncate">
-                      @{post.author?.username}
-                    </p>
-                  </Link>
+                  {post.author?.username ? (
+                    <Link
+                      href={
+                        `/dashboard/users/${post?.author?.username}` as Route
+                      }
+                    >
+                      <p className="text-xs text-muted-foreground truncate">
+                        @{post.author?.username}
+                      </p>
+                    </Link>
+                  ) : (
+                    <p></p>
+                  )}
                 </div>
               </div>
 
