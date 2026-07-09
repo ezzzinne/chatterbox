@@ -90,14 +90,16 @@ export async function DashboardNavbar() {
           <div className="flex items-center gap-3">
             <MobileSidebar />
 
-            <h1 className="font-bold">Chatterbox</h1>
+            <Link href={"/"}>
+              <h1 className="font-bold">Chatterbox</h1>
+            </Link>
           </div>
 
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon">
               <NotificationBell initialNotifications={notifications} />
             </Button>
-            
+
             <Link href={"/dashboard/posts/new" as Route}>
               <Button size="sm">
                 <Plus />

@@ -26,7 +26,9 @@ export default async function DesktopSidebar() {
     <>
       <aside className="hidden w-72 border-r bg-muted/30 lg:flex lg:flex-col">
         <div className="border-b px-6 py-5">
-          <h1 className="text-2xl font-bold tracking-tight">Chatterbox</h1>
+          <Link href={"/"}>
+            <h1 className="text-2xl font-bold tracking-tight">Chatterbox</h1>
+          </Link>
           <p className="mt-1 text-sm text-muted-foreground">
             Publish. Discover. Analyze.
           </p>
