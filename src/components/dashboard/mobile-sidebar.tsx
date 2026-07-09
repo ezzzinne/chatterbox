@@ -18,6 +18,7 @@ import { Route } from "next";
 import LogoutButton from "../logout-button";
 import { createClient } from "@/lib/server";
 import { headers } from "next/headers";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export async function MobileSidebar() {
   const headerList = headers();
@@ -28,6 +29,13 @@ export async function MobileSidebar() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user?.id)
+    .maybeSingle();
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -60,18 +68,43 @@ export async function MobileSidebar() {
           })}
         </div>
         <div className="flex items-center justify-end gap-3 rounded-2xl border bg-background p-3">
-          <div className="flex size-11 items-center justify-center rounded-full bg-muted text-sm font-semibold">
-            {`${user?.user_metadata?.first_name?.[0] ?? ""}${user?.user_metadata?.last_name?.[0] ?? ""}`.toUpperCase()}
-          </div>
+          {profile?.username ? (
+            <Link href={`/dashboard/users/${profile.username}` as Route}>
+              <Avatar>
+                <AvatarImage src={user?.user_metadata?.avatar_url ?? ""} />
 
+                <AvatarFallback>
+                  {`${user?.user_metadata?.first_name?.[0] ?? ""}${
+                    user?.user_metadata?.last_name?.[0] ?? ""
+                  }`.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          ) : (
+            <Avatar>
+              <AvatarImage src={user?.user_metadata?.avatar_url ?? ""} />
+
+              <AvatarFallback>
+                {`${user?.user_metadata?.first_name?.[0] ?? ""}${
+                  user?.user_metadata?.last_name?.[0] ?? ""
+                }`.toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          )}
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">
               {user?.user_metadata.full_name}
             </p>
 
-            <p className="truncate text-xs text-muted-foreground">
-              {user?.user_metadata.username}
-            </p>
+            {user?.user_metadata.username ? (
+              <p className="truncate text-xs text-muted-foreground">
+                {user?.user_metadata.username}
+              </p>
+            ) : (
+              <p className="truncate text-xs text-muted-foreground text-wrap">
+                {user?.user_metadata.email}
+              </p>
+            )}
           </div>
 
           <LogoutButton />

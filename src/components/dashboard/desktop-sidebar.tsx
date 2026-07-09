@@ -4,6 +4,7 @@ import { Route } from "next";
 import { createClient } from "@/lib/server";
 import { headers } from "next/headers";
 import LogoutButton from "../logout-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function DesktopSidebar() {
   const headerList = headers();
@@ -14,6 +15,12 @@ export default async function DesktopSidebar() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", user?.id)
+    .maybeSingle();
 
   return (
     <>
@@ -43,18 +50,44 @@ export default async function DesktopSidebar() {
         </nav>
 
         <div className="flex items-center gap-3 rounded-2xl border bg-background p-3">
-          <div className="flex size-11 items-center justify-center rounded-full bg-muted text-sm font-semibold">
-            {`${user?.user_metadata?.first_name?.[0] ?? ""}${user?.user_metadata?.last_name?.[0] ?? ""}`.toUpperCase()}
-          </div>
+          {profile?.username ? (
+            <Link href={`/dashboard/users/${profile.username}` as Route}>
+              <Avatar>
+                <AvatarImage src={user?.user_metadata?.avatar_url ?? ""} />
+
+                <AvatarFallback>
+                  {`${user?.user_metadata?.first_name?.[0] ?? ""}${
+                    user?.user_metadata?.last_name?.[0] ?? ""
+                  }`.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          ) : (
+            <Avatar>
+              <AvatarImage src={user?.user_metadata?.avatar_url ?? ""} />
+
+              <AvatarFallback>
+                {`${user?.user_metadata?.first_name?.[0] ?? ""}${
+                  user?.user_metadata?.last_name?.[0] ?? ""
+                }`.toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          )}
 
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">
               {user?.user_metadata.full_name}
             </p>
 
-            <p className="truncate text-xs text-muted-foreground">
-              @{user?.user_metadata.username}
-            </p>
+            {user?.user_metadata.username ? (
+              <p className="truncate text-xs text-muted-foreground">
+                {user?.user_metadata.username}
+              </p>
+            ) : (
+              <p className="truncate text-xs text-muted-foreground text-wrap">
+                {user?.user_metadata.email}
+              </p>
+            )}
           </div>
 
           <LogoutButton />
