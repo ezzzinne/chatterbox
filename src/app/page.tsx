@@ -207,9 +207,9 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="lg:pl-4">
+          <div className="lg:pl-16">
             <div className="rounded-2xl border bg-background p-4 shadow-sm sm:p-5">
-              <div className="mb-5 flex flex-col gap-3 border-b pb-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mb-5 flex gap-3 border-b pb-5 items-center justify-between">
                 <div>
                   <h2 className="mt-1 text-xl font-semibold tracking-tight">
                     Welcome back
