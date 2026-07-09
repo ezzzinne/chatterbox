@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Bookmark, Eye, Heart, MessageCircle } from "lucide-react";
 import { Button } from "../ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Route } from "next";
 
 type PostCardProps = {
@@ -29,7 +30,7 @@ type PostCardProps = {
       username: string | null;
       avatar_url: string | null;
     } | null;
-    tags?: {
+    tags: {
       id: string;
       name: string;
     }[];
@@ -48,7 +49,16 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <Card className="grid gap-4 h-full transition-all hover:-translate-y-1 hover:shadow-md hover:border-primary/20">
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="space-y-5">
+          {post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <Badge key={tag.id} variant="secondary">
+                  {tag.name}
+                </Badge>
+              ))}
+            </div>
+          )}
           <h2 className="line-clamp-2 text-xl font-semibold leading-tight tracking-tight">
             {post.title || "Untitled"}
           </h2>

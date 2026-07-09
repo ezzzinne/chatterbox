@@ -22,7 +22,6 @@ The platform supports a complete content workflow from draft creation to publish
 * [Running the Project Locally](#running-the-project-locally)
 * [Running Tests](#running-tests)
 * [Deployment Notes](#deployment-notes)
-* [Known Notes](#known-notes)
 
 ---
 
